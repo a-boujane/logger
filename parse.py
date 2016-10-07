@@ -1,6 +1,12 @@
 import os
 import re
 import logger
+import json
+import time
+
+timer= time.time()
+def finalize(result):
+    return "{"+result+"}"
 
 # Create a new logger object
 logger = logger.Logger();
@@ -22,6 +28,14 @@ for filename in lissy:
         # Adding the address found to the logger's dictionnary
         logger.addItems(*pat.findall(fil.read()))
         fil.close()
-logger.toJson("output.json")
-logger.stringify()
-logger.toJson("output2.json")
+
+result = logger.locate()
+
+json.dumps(result)
+
+print time.time()-timer
+# finalize(result)
+
+# print result
+
+
