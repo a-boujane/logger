@@ -1,10 +1,16 @@
 import pprint
 import json
 import requests
+import threading
+import time
 class Logger:
+    
+
     def __init__(self):
         self.dico={};
         self.locations = {};
+        self.lock = threading.Lock()
+
     
     def addItems(self,*keys):
         for key in keys:
@@ -34,7 +40,9 @@ class Logger:
 
     def locate(self):
         for key in self.dico:
-            self.locateOne(key)
+            threading.Thread(target=self.locateOne,args=(key,),name="3bdssssslaaaaam"+key).start()
+        while threading.activeCount()>1:
+            time.sleep(0.1)
         return self.locations
 
 
@@ -47,5 +55,8 @@ class Logger:
             temp ={}
             temp["latitude"]= jo["latitude"]
             temp["longitude"]= jo["longitude"]
-            self.locations[ipAddress]=temp
-            return self.locations
+            self.lock.acquire()
+            try:
+                self.locations[ipAddress]=temp
+            finally:
+                self.lock.release()
